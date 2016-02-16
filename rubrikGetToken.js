@@ -1,12 +1,15 @@
 // vRO Action rubrikGetToken from package com.rubrik.library.rest.package
 //
 // INPUT PARAMETERS
-// REST:REST Operation - REST operation for POST /login
-// string              - username string
-// SecureString        - password Secure String
+// ----------------
+// NAME             - TYPE                - DESCRIPTION
+// restPostLogin    - REST:REST Operation - REST operation for POST /login
+// userId           - string              - username
+// password         - SecureString        - password
 //
-// RETURN TYPE
-// string              - Rubrik authentication token string
+// RETURN
+// -----------
+// N/A              - string              - Rubrik authentication token
 
 //Contruct REST call
 var restData = '{"userId":"' + userId + '","password":"' + password + '"}';
