@@ -5,7 +5,7 @@
 // NAME             - TYPE                - DESCRIPTION
 // tokenBase 64     - string              - Rubrik authentication token
 // restPatchVM      - REST:REST Operation - REST operation for PATCH /vm/{id}
-// vm               - VC:VirtualMachine   - VM to assign to SLA Domain
+// vmId             - string              - Rubrik ID for VM
 // slaID            - string              - SLA Domain ID
 //
 // RETURN
@@ -13,9 +13,9 @@
 // N/A              - void                - N/A
 
 //Contruct REST call
-var rubrikVmId = vm.vimHost.instanceUuid + "-" + vm.id;
+//var rubrikVmId = vm.vimHost.instanceUuid + "-" + vm.id;
 var restData = '{"slaDomainId":"' + slaID + '"}';
-var restParams = [rubrikVmId];
+var restParams = [vmId];
 var restRequest = restPatchVM.createRequest(restParams, restData);
 var token = ("Basic " + tokenBase64);
 restRequest.contentType = "application\/json";
