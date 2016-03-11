@@ -5,15 +5,15 @@
 // NAME             - TYPE                - DESCRIPTION
 // tokenBase 64     - string              - Rubrik authentication token
 // restPostJob      - REST:REST Operation - REST operation for POST /job/type/backup
-// vm               - VC:VirtualMachine   - VM to backup
+// vmId             - string              - Rubrik ID for VM
 //
 // RETURN
 // -----------
 // N/A              - string              - Job ID of Backup Job
 
 //Contruct REST call
-var rubrikVmId = vm.vimHost.instanceUuid + "-" + vm.id;
-var restData = '{"vmId":"' + rubrikVmId + '"}';
+//var rubrikVmId = vm.vimHost.instanceUuid + "-" + vm.id;
+var restData = '{"vmId":"' + vmId + '"}';
 var restParams = [];
 var restRequest = restPostJob.createRequest(restParams, restData);
 var token = ("Basic " + tokenBase64);

@@ -6,7 +6,7 @@
 // tokenBase 64        - string              - Rubrik authentication token
 // restGetSnapshot     - REST:REST Operation - REST operation to GET /snapshot?vm={id}
 // restJobTypeMount    - REST:REST Operation - REST operation to POST /job/type/mount
-// vm                  - VC:VirtualMachine   - VM to delete Rubrik snapshots
+// vmId                - string              - Rubrik ID for VM
 // vmhost              - VC:HostSystem       - vSphere host to live mount vm on
 // beforeDate          - Date                - Date to live mount prior to
 //
@@ -15,9 +15,9 @@
 // N/A                 - string              - Job ID of live mount
 
 //Contruct REST call
-var rubrikVmId = vm.vimHost.instanceUuid + "-" + vm.id;
+//var rubrikVmId = vm.vimHost.instanceUuid + "-" + vm.id;
 var restData = null;
-var restParams = [rubrikVmId];
+var restParams = [vmId];
 var restRequest = restGetSnapshots.createRequest(restParams, restData);
 var token = ("Basic " + tokenBase64);
 restRequest.contentType = "application\/json";
@@ -78,7 +78,7 @@ for(var i = 0; i < json.length; i++) {
 	if(rDate.getTime() <= gmtDate.getTime()) {
 		var snapshotId = obj.id;
 		System.log("***SNAPSHOT FOUND***");
-		System.log("VM Name = " + vm.name);
+		//System.log("VM Name = " + vm.name);
 		System.log("Snapshot ID = " + snapshotId);
 		System.log("Snapshot date = " + obj.date);
 		break;

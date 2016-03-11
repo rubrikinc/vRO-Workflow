@@ -6,16 +6,16 @@
 // tokenBase 64        - string              - Rubrik authentication token
 // restGetSnapshot     - REST:REST Operation - REST operation to GET /snapshot?vm={id}
 // restDeleteSnapshot  - REST:REST Operation - REST operation to DELETE /snapshot/{id}
-// vm                  - VC:VirtualMachine   - VM to delete Rubrik on-demand snapshots
+// vmId                - string              - Rubrik ID for VM
 //
 // RETURN
 // -----------
 // N/A                 - void                - N/A
 
 //Contruct REST call
-var rubrikVmId = vm.vimHost.instanceUuid + "-" + vm.id;
+//var rubrikVmId = vm.vimHost.instanceUuid + "-" + vm.id;
 var restData = null;
-var restParams = [rubrikVmId];
+var restParams = [vmId];
 var restRequest = restGetSnapshot.createRequest(restParams, restData);
 var token = ("Basic " + tokenBase64);
 restRequest.contentType = "application\/json";
