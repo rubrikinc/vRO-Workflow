@@ -1,5 +1,5 @@
 #Update
-vRO package has been updated to 2.0 with the help of our friends at Ahead.  Most notably Eric Shanks https://github.com/eshanks16
+vRO package has been updated to 2.0 with the help of our friends at Ahead.  Most notably the refactoring work done by Eric Shanks https://github.com/eshanks16
 
 Check out the associated wiki for getting started with the new version:
 
