@@ -1,32 +1,33 @@
 // vRO Action rubrikGetSLAID from package com.rubrik.library.rest.package
 //
-// INPUT PARAMETERS
-// ----------------
 // NAME             - TYPE                - DESCRIPTION
-// tokenBase 64     - string              - Rubrik authentication token
-// restGetSLADomain - REST:REST Operation - REST operation to GET /slaDomain
+// ----------------------------------------------------
+// <INPUT PARAMETERS> 
+// tokenBase64      - string              - Rubrik authentication token
+// rubrikHost       - REST:REST Host      - Rubrik REST host
 // slaDomainName    - string              - SLA Domain Name
 //
-// RETURN
-// -----------
+// <RETURN VALUE>
 // N/A              - string              - SLA Domain ID
 
-//Contruct REST call
-var restData = null;
-var restParams = [];
-var restRequest = restGetSLADomain.createRequest(restParams, restData);
+//Construct REST call
+var method = "GET";
+var url = "slaDomain";
+var content = null;
+var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
-restRequest.contentType = "application\/json";
-restRequest.setHeader("Accept", "application/json");
-restRequest.setHeader("Authorization", token);
+request.contentType = "application\/json";
+request.setHeader("Accept", "application/json");
+request.setHeader("Authorization", token);
 
 //Log REST Call Info
 System.log("token = " + token);
-System.log("REST Call = " + restRequest.fullUrl);
+System.log("REST URL = " + request.fullUrl);
+System.log("REST Content = " + content);
 
 //Execute REST Call
 try {
-	var restResponse = restRequest.execute();
+	var response = request.execute();
 }
 catch (ex) {
 	System.error("REST call failed");
@@ -34,18 +35,18 @@ catch (ex) {
 }
 
 //Evaluate REST Response
-var statusCode = restResponse.statusCode;
+var statusCode = response.statusCode;
 if (statusCode == 200) {
-	System.log("GET slaDomain Succeeded");
+	System.log("REST Execution Successful");
 }
 else {
-	System.log("Failed to GET slaDomain");
+	System.log("ERROR Executing REST operation");
 	System.error("Status Code = " + statusCode);
 	throw "Stopping Execution";
 }
 
 //Loop Through SLA Domains to Find Corresponding ID
-var json = JSON.parse(restResponse.contentAsString);
+var json = JSON.parse(response.contentAsString);
 
 for(var i = 0; i < json.length; i++) {
 	var obj = json[i];

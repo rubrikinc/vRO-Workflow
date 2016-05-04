@@ -1,35 +1,34 @@
 // vRO Action rubrikAssignVMToSLA from package com.rubrik.library.rest.package
 //
-// INPUT PARAMETERS
-// ----------------
 // NAME             - TYPE                - DESCRIPTION
-// tokenBase 64     - string              - Rubrik authentication token
-// restPatchVM      - REST:REST Operation - REST operation for PATCH /vm/{id}
+// ----------------------------------------------------
+// <INPUT PARAMETERS> 
+// tokenBase64      - string              - Rubrik authentication token
+// rubrikHost       - REST:REST Host      - Rubrik REST host
 // vmId             - string              - Rubrik ID for VM
 // slaID            - string              - SLA Domain ID
 //
-// RETURN
-// -----------
+// <RETURN VALUE>
 // N/A              - void                - N/A
 
-//Contruct REST call
-//var rubrikVmId = vm.vimHost.instanceUuid + "-" + vm.id;
-var restData = '{"slaDomainId":"' + slaID + '"}';
-var restParams = [vmId];
-var restRequest = restPatchVM.createRequest(restParams, restData);
+//Construct REST call
+var method = "PATCH";
+var url = "vm/" + vmId;
+var content = '{"slaDomainId":"' + slaID + '"}';
+var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
-restRequest.contentType = "application\/json";
-restRequest.setHeader("Accept", "application/json");
-restRequest.setHeader("Authorization", token);
+request.contentType = "application\/json";
+request.setHeader("Accept", "application/json");
+request.setHeader("Authorization", token);
 
 //Log REST Call Info
 System.log("token = " + token);
-System.log("REST Call = " + restRequest.fullUrl);
-System.log("REST Data = " + restData);
+System.log("REST URL = " + request.fullUrl);
+System.log("REST Content = " + content);
 
 //Execute REST Call
 try {
-	var restResponse = restRequest.execute();
+	var response = request.execute();
 }
 catch (ex) {
 	System.error(ex);
@@ -37,15 +36,15 @@ catch (ex) {
 }
 
 //Evaluate REST Response
-var statusCode = restResponse.statusCode;
+var statusCode = response.statusCode;
 if (statusCode == 200) {
-	System.log("PATCH Successful");
+	System.log("REST Execution Successful");
 }
 else {
-	System.log("Failed to PATCH VM");
+	System.log("ERROR Executing REST operation");
 	System.error("Status Code = " + statusCode);
 	throw "Stopping Execution";
 }
 
 //log response
-System.log("Response: " + restResponse.contentAsString);
+System.log("Response: " + response.contentAsString);

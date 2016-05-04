@@ -1,28 +1,29 @@
 // vRO Action rubrikWaitForJobResult from package com.rubrik.library.rest.package
 //
-// INPUT PARAMETERS
-// ----------------
 // NAME             - TYPE                - DESCRIPTION
-// tokenBase 64     - string              - Rubrik authentication token
-// restGetJob       - REST:REST Operation - REST operation to GET /job/{id}
+// ----------------------------------------------------
+// <INPUT PARAMETERS> 
+// tokenBase64      - string              - Rubrik authentication token
+// rubrikHost       - REST:REST Host      - Rubrik REST host
 // jobId            - string              - Rubrik job ID
 //
-// RETURN
-// -----------
+// <RETURN VALUE>
 // N/A              - string              - Final result of job (SUCCESS/FAILURE)
 
-//Contruct REST call
-var restData = null
-var restParams = [jobId];
-var restRequest = restGetJob.createRequest(restParams, restData);
+//Construct REST call
+var method = "GET";
+var url = "job/instance/" + jobId;
+var content = null;
+var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
-restRequest.contentType = "application\/json";
-restRequest.setHeader("Accept", "application/json");
-restRequest.setHeader("Authorization", token);
+request.contentType = "application\/json";
+request.setHeader("Accept", "application/json");
+request.setHeader("Authorization", token);
 
 //Log REST Call Info
 System.log("token = " + token);
-System.log("REST Call = " + restRequest.fullUrl);
+System.log("REST URL = " + request.fullUrl);
+System.log("REST Content = " + content);
 
 var jobStatus = "UNKNOWN"
 
@@ -33,7 +34,7 @@ while (jobStatus != "SUCCEEDED" && jobStatus != "FAILED") {
 
 	//Execute REST Call
 	try {
-		var restResponse = restRequest.execute();
+		var response = request.execute();
 	}
 	catch (ex) {
 		System.error(ex);
@@ -41,18 +42,18 @@ while (jobStatus != "SUCCEEDED" && jobStatus != "FAILED") {
 	}
 
 	//Evaluate REST Response
-	var statusCode = restResponse.statusCode;
+	var statusCode = response.statusCode;
 	if (statusCode == 200) {
-		System.log("GET job Successful");
+		System.log("REST Execution Successful");
 	}
 	else {
-		System.log("Failed to GET job");
+		System.log("ERROR Executing REST operation");
 		System.error("Status Code = " + statusCode);
 		throw "Stopping Execution";
 	}
 	
 	//update status variable
-	var json = JSON.parse(restResponse.contentAsString);
+	var json = JSON.parse(response.contentAsString);
 	var jobStatus = json.status
 
 	//log response

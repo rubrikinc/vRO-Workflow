@@ -1,34 +1,33 @@
 // vRO Action rubrikDeleteALLSnapshotsByVM from package com.rubrik.library.rest.package
 //
-// INPUT PARAMETERS
-// ----------------
-// NAME                - TYPE                - DESCRIPTION
-// tokenBase 64        - string              - Rubrik authentication token
-// restGetSnapshot     - REST:REST Operation - REST operation to GET /snapshot?vm={id}
-// restDeleteSnapshot  - REST:REST Operation - REST operation to DELETE /snapshot/{id}
+// NAME             - TYPE                - DESCRIPTION
+// ----------------------------------------------------
+// <INPUT PARAMETERS> 
+// tokenBase64         - string              - Rubrik authentication token
+// rubrikHost          - REST:REST Host      - Rubrik REST host
 // vmId                - string              - Rubrik ID for VM
 //
-// RETURN
-// -----------
+// <RETURN VALUE>
 // N/A                 - void                - N/A
 
-//Contruct REST call
-//var rubrikVmId = vm.vimHost.instanceUuid + "-" + vm.id;
-var restData = null;
-var restParams = [vmId];
-var restRequest = restGetSnapshot.createRequest(restParams, restData);
+//Construct REST call
+var method = "GET";
+var url = "snapshot?vm=" + vmId;
+var content = null;
+var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
-restRequest.contentType = "application\/json";
-restRequest.setHeader("Accept", "application/json");
-restRequest.setHeader("Authorization", token);
+request.contentType = "application\/json";
+request.setHeader("Accept", "application/json");
+request.setHeader("Authorization", token);
 
 //Log REST Call Info
 System.log("token = " + token);
-System.log("REST Call = " + restRequest.fullUrl);
+System.log("REST URL = " + request.fullUrl);
+System.log("REST Content = " + content);
 
 //Execute REST Call
 try {
-	var restResponse = restRequest.execute();
+	var response = request.execute();
 }
 catch (ex) {
 	System.error("REST call failed");
@@ -36,40 +35,43 @@ catch (ex) {
 }
 
 //Evaluate REST Response
-var statusCode = restResponse.statusCode;
+var statusCode = response.statusCode;
 if (statusCode == 200) {
-	System.log("GET snapshots Succeeded");
+	System.log("REST Execution Successful");
 }
 else {
-	System.log("Failed to GET snapshots");
+	System.log("ERROR Executing REST operation");
 	System.error("Status Code = " + statusCode);
 	throw "Stopping Execution";
 }
 
 //Loop Through Snapshots Looking for On-Demand Snapshots
-var json = JSON.parse(restResponse.contentAsString);
+var json = JSON.parse(response.contentAsString);
 
 System.log("Deleting " + json.length + " Snapshots");
 
 for(var i = 0; i < json.length; i++) {
 	var obj = json[i];
 		
-	//Build REST call
+	//Construct REST call
 	var snapId = obj.id;
-	var restData = null;
-	var restParams = [snapId];
-	var restRequest = restDeleteSnapshot.createRequest(restParams, restData);
+	var method = "DELETE";
+	var url = "snapshot/" + snapId;
+	var content = null;
+	var request = rubrikHost.createRequest(method, url, content);
 	var token = ("Basic " + tokenBase64);
-	restRequest.contentType = "application\/json";
-	restRequest.setHeader("Accept", "application/json");
-	restRequest.setHeader("Authorization", token);
+	request.contentType = "application\/json";
+	request.setHeader("Accept", "application/json");
+	request.setHeader("Authorization", token);
 	
 	//Log REST Call Info
-	System.log("REST Call = " + restRequest.fullUrl);
+	System.log("token = " + token);
+	System.log("REST URL = " + request.fullUrl);
+	System.log("REST Content = " + content);
 	
 	//Execute REST Call
 	try {
-		var restResponse = restRequest.execute();
+		var response = request.execute();
 	}
 	catch (ex) {
 		System.error("REST call failed");
@@ -77,13 +79,15 @@ for(var i = 0; i < json.length; i++) {
 	}
 	
 	//Evaluate REST Response
-	var statusCode = restResponse.statusCode;
+	var statusCode = response.statusCode;
 	if (statusCode == 200) {
-		System.log("DELETE snapshot Succeeded");
+		System.log("REST Execution Successful");
 	}
 	else {
-		System.log("Failed to DELETE snapshot");
+		System.log("ERROR Executing REST operation");
 		System.error("Status Code = " + statusCode);
 		throw "Stopping Execution";
 	}
+	
+	System.log("Deleted Snapshot " + i + " of " + json.length);
 }

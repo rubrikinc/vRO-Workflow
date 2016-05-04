@@ -1,32 +1,33 @@
-// vRO Action rubrikGetSLAID from package com.rubrik.library.rest.package
+// vRO Action rubrikGetVMID from package com.rubrik.library.rest.package
 //
-// INPUT PARAMETERS
-// ----------------
 // NAME             - TYPE                - DESCRIPTION
-// tokenBase 64     - string              - Rubrik authentication token
-// restGetVM        - REST:REST Operation - REST operation to GET /vm
+// ----------------------------------------------------
+// <INPUT PARAMETERS> 
+// tokenBase64      - string              - Rubrik authentication token
+// rubrikHost       - REST:REST Host      - Rubrik REST host
 // vm               - VC:VirtualMachine   - VM to get Rubrik ID for
 //
-// RETURN
-// -----------
+// <RETURN VALUE>
 // N/A              - string              - Rubrik VM ID
 
-//Contruct REST call
-var restData = null;
-var restParams = [];
-var restRequest = restGetVm.createRequest(restParams, restData);
+//Construct REST call
+var method = "GET";
+var url = "vm";
+var content = null;
+var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
-restRequest.contentType = "application\/json";
-restRequest.setHeader("Accept", "application/json");
-restRequest.setHeader("Authorization", token);
+request.contentType = "application\/json";
+request.setHeader("Accept", "application/json");
+request.setHeader("Authorization", token);
 
 //Log REST Call Info
 System.log("token = " + token);
-System.log("REST Call = " + restRequest.fullUrl);
+System.log("REST URL = " + request.fullUrl);
+System.log("REST Content = " + content);
 
 //Execute REST Call
 try {
-	var restResponse = restRequest.execute();
+	var response = request.execute();
 }
 catch (ex) {
 	System.error("REST call failed");
@@ -34,18 +35,18 @@ catch (ex) {
 }
 
 //Evaluate REST Response
-var statusCode = restResponse.statusCode;
+var statusCode = response.statusCode;
 if (statusCode == 200) {
-	System.log("GET vm Succeeded");
+	System.log("REST Execution Successful");
 }
 else {
-	System.log("Failed to GET vm");
+	System.log("ERROR Executing REST operation");
 	System.error("Status Code = " + statusCode);
 	throw "Stopping Execution";
 }
 
 //Loop Through VMs returned from Rubrik
-var json = JSON.parse(restResponse.contentAsString);
+var json = JSON.parse(response.contentAsString);
 
 for(var i = 0; i < json.length; i++) {
 	var obj = json[i];
@@ -56,6 +57,6 @@ for(var i = 0; i < json.length; i++) {
 	}
 }
 
-//SLA ID Not Found
+//VM ID Not Found
 System.error("No Matching VM Found With the Name: " + vm.name + " and the moid: " + vm.id);
 throw "Stopping Execution";
