@@ -7,14 +7,15 @@
 // tokenBase64      - string              - Rubrik authentication token
 // snapshotId       - string              - Rubrik snapshot ID
 // esxiHostId       - string              - Rubrik ESXi host ID
+// api_url			- string			  - Rubrik API URL
 //
 // <RETURN VALUE>
 // N/A              - string              - Rubrik Job ID
 
 //Construct REST call
 var method = "POST";
-var url = "job/type/instant_recover";
-var content = '{"snapshotId":"' + snapshotId + '","hostId":"' + esxiHostId + '"}';
+var url = api_url + "vmware/vm/snapshot/" + snapshotId + "/instant_recover";
+var content = '{"hostId":"' + esxiHostId + '"}';
 var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
 request.contentType = "application\/json";
@@ -37,7 +38,7 @@ catch (ex) {
 
 //Evaluate REST Response
 var statusCode = response.statusCode;
-if (statusCode == 200) {
+if (statusCode == 202) {
 	System.log("REST Execution Successful");
 }
 else {
@@ -46,8 +47,6 @@ else {
 	throw "Stopping Execution";
 }
 
-//Bugfix - need to remove quotes around job ID
-jobId = response.contentAsString.substring(1,response.contentAsString.length - 1)
-
-System.log("Job ID: " + jobId);
-return jobId;
+var json = JSON.parse(response.contentAsString);
+System.log("Request ID: " + json.id);
+return json.id;
