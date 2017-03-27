@@ -6,13 +6,15 @@
 // tokenBase64      - string              - Rubrik authentication token
 // rubrikHost       - REST:REST Host      - Rubrik REST host
 // slaDomainName    - string              - SLA Domain Name
+// query_limit		- number			  - Query limit
+// api_url			- string			  - API URL
 //
 // <RETURN VALUE>
 // N/A              - string              - SLA Domain ID
 
 //Construct REST call
 var method = "GET";
-var url = "slaDomain";
+var url = api_url + "sla_domain?limit=" + query_limit;
 var content = null;
 var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
@@ -46,7 +48,7 @@ else {
 }
 
 //Loop Through SLA Domains to Find Corresponding ID
-var json = JSON.parse(response.contentAsString);
+var json = (JSON.parse(response.contentAsString)).data;
 
 for(var i = 0; i < json.length; i++) {
 	var obj = json[i];
