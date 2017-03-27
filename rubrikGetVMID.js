@@ -6,13 +6,15 @@
 // tokenBase64      - string              - Rubrik authentication token
 // rubrikHost       - REST:REST Host      - Rubrik REST host
 // vm               - VC:VirtualMachine   - VM to get Rubrik ID for
+// query_limit		- string			  - Rubrik Query limit
+// api_url			- string			  - Rubrik API URL
 //
 // <RETURN VALUE>
 // N/A              - string              - Rubrik VM ID
 
 //Construct REST call
 var method = "GET";
-var url = "vm";
+var url = api_url + "vmware/vm?limit=" + query_limit;
 var content = null;
 var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
@@ -46,17 +48,18 @@ else {
 }
 
 //Loop Through VMs returned from Rubrik
-var json = JSON.parse(response.contentAsString);
+var json = (JSON.parse(response.contentAsString)).data;
 
 for(var i = 0; i < json.length; i++) {
 	var obj = json[i];
-	//If we match both the VM friendly name and the VM moid we can be pretty sure we found the corresponding ID
-	if(obj.name == vm.name && obj.moid == vm.id) {
+	System.log(obj.name);
+	//If we match the VM friendly name return the corresponding ID
+	if(obj.name == vm.name) {
 		System.log("VM ID = " + obj.id);
 		return obj.id;
 	}
 }
 
 //VM ID Not Found
-System.error("No Matching VM Found With the Name: " + vm.name + " and the moid: " + vm.id);
+System.error("No Matching VM Found With the Name: " + vm.name);
 throw "Stopping Execution";
