@@ -6,14 +6,15 @@
 // tokenBase64      - string              - Rubrik authentication token
 // rubrikHost       - REST:REST Host      - Rubrik REST host
 // vmId             - string              - Rubrik ID for VM
+// api_url          - string              - Versioned API URL
 //
 // <RETURN VALUE>
-// N/A              - string              - Job ID of Backup Job
+// N/A              - string              - Request ID of Backup Job
 
 //Construct REST call
 var method = "POST";
-var url = "job/type/backup";
-var content = '{"vmId":"' + vmId + '"}';
+var url = api_url + "vmware/vm/" + vmId + "/snapshot";
+var content = '{"id":"' + vmId + '"}';
 var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
 request.contentType = "application\/json";
@@ -36,7 +37,7 @@ catch (ex) {
 
 //Evaluate REST Response
 var statusCode = response.statusCode;
-if (statusCode == 200) {
+if (statusCode == 202) {
 	System.log("REST Execution Successful");
 }
 else {
@@ -47,7 +48,7 @@ else {
 
 //Log Response
 var json = JSON.parse(response.contentAsString);
-System.log("Job ID: " + json.description);
+System.log("Request ID: " + json.id);
 
 //Return Backup Job ID
-return json.description
+return json.id
