@@ -6,13 +6,14 @@
 // tokenBase64      - string              - Rubrik authentication token
 // rubrikHost       - REST:REST Host      - Rubrik REST host
 // jobId            - string              - Rubrik job ID
+// api_url			- string			  - Rubrik API URL
 //
 // <RETURN VALUE>
 // N/A              - string              - Final result of job (SUCCESS/FAILURE)
 
 //Construct REST call
 var method = "GET";
-var url = "job/instance/" + jobId;
+var url = api_url + "vmware/vm/request/" + jobId;
 var content = null;
 var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
