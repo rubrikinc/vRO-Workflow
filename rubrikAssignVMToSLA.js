@@ -7,14 +7,15 @@
 // rubrikHost       - REST:REST Host      - Rubrik REST host
 // vmId             - string              - Rubrik ID for VM
 // slaID            - string              - SLA Domain ID
+// api_url          - string              - Versioned API URL
 //
 // <RETURN VALUE>
 // N/A              - void                - N/A
 
 //Construct REST call
 var method = "PATCH";
-var url = "vm/" + vmId;
-var content = '{"slaDomainId":"' + slaID + '"}';
+var url = api_url + "vmware/vm/" + vmId;
+var content = '{"configuredSlaDomainId":"' + slaID + '"}';
 var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
 request.contentType = "application\/json";
