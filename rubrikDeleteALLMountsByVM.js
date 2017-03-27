@@ -6,14 +6,15 @@
 // tokenBase64         - string              - Rubrik authentication token
 // rubrikHost          - REST:REST Host      - Rubrik REST host
 // vmId                - string              - Rubrik VM ID
+// api_url			   - string			  	 - Rubrik API URL
 //
 // <RETURN VALUE>
 // N/A                 - void                - N/A
 
 //Construct REST call
 var method = "GET";
-var url = "mount/vm/" + vmId;
-var content = null;
+var url = api_url + "vmware/vm/snapshot/mount";
+var content = '{"vm_id":"' + vmId + '"}';
 var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
 request.contentType = "application\/json";
@@ -46,7 +47,7 @@ else {
 }
 
 //Delete all Mounts Returned
-var json = JSON.parse(response.contentAsString);
+var json = (JSON.parse(response.contentAsString)).data;
 
 for(var i = 0; i < json.length; i++) {
 	var obj = json[i];
@@ -55,9 +56,9 @@ for(var i = 0; i < json.length; i++) {
 	System.log("Removing mount " + mountId);
 		
 	//Construct REST call
-	var method = "POST";
-	var url = "job/type/unmount";
-	var content = '{"mountId":"' + mountId + '","force":"false"}';
+	var method = "DELETE";
+	var url = api_url + "vmware/vm/snapshot/mount/" + mountId;
+	var content = "";
 	var request = rubrikHost.createRequest(method, url, content);
 	var token = ("Basic " + tokenBase64);
 	request.contentType = "application\/json";
@@ -80,7 +81,7 @@ for(var i = 0; i < json.length; i++) {
 	
 	//Evaluate REST Response
 	var statusCode = response.statusCode;
-	if (statusCode == 200) {
+	if (statusCode == 202) {
 		System.log("REST Execution Successful");
 	}
 	else {
