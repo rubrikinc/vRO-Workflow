@@ -1,3 +1,7 @@
+#2017-03-27
+
+Updated release to 3.1 which will work with Rubrik clusters running 3.1 code
+
 #Update
 vRO package has been updated to 2.0 with the help of our friends at Ahead.  Most notably the refactoring work done by Eric Shanks https://github.com/eshanks16
 
