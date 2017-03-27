@@ -6,13 +6,15 @@
 // tokenBase64      - string              - Rubrik authentication token
 // rubrikHost       - REST:REST Host      - Rubrik REST host
 // vCenter          - string              - vCenter name
+// query_limit		- number			  - Query limit
+// api_url			- string			  - API URL
 //
 // <RETURN VALUE>
 // N/A              - string              - vCenter ID
 
 //Construct REST call
 var method = "GET";
-var url = "vcenter";
+var url = api_url + "vmware/vcenter?limit=" + query_limit;
 var content = null;
 var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
@@ -46,11 +48,11 @@ else {
 }
 
 //Loop Through vCenters to Find Corresponding ID
-var json = JSON.parse(response.contentAsString);
+var json = (JSON.parse(response.contentAsString)).data;
 
 for(var i = 0; i < json.length; i++) {
 	var obj = json[i];
-	if(obj.ip == vCenter) {
+	if(obj.hostname == vCenter) {
 		System.log("vCenter ID = " + obj.id);
 		return obj.id;
 	}
