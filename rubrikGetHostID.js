@@ -6,13 +6,15 @@
 // tokenBase64      - string              - Rubrik authentication token
 // rubrikHost       - REST:REST Host      - Rubrik REST host
 // vmHost           - VC:HostSystem       - ESXi Host
+// query_limit		- number			  - Query limit
+// api_url			- string			  - API URL
 //
 // <RETURN VALUE>
 // N/A              - string              - ESXi Host ID
 
 //Construct REST call
 var method = "GET";
-var url = "vmware/host";
+var url = api_url + "vmware/host?limit=" + query_limit;
 var content = null;
 var request = rubrikHost.createRequest(method, url, content);
 var token = ("Basic " + tokenBase64);
@@ -46,7 +48,7 @@ else {
 }
 
 //Loop Through Hosts to Find Corresponding ID
-var json = JSON.parse(response.contentAsString);
+var json = (JSON.parse(response.contentAsString)).data;
 
 for(var i = 0; i < json.length; i++) {
 	var obj = json[i];
